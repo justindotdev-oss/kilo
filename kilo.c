@@ -211,6 +211,7 @@ void disableRawMode(int fd) {
 
 /* Called at exit to avoid remaining in raw mode. */
 void editorAtExit(void) {
+    write(STDOUT_FILENO, "\x1b[?1049l", 8); /* Leave alternate screen buffer */
     disableRawMode(STDIN_FILENO);
 }
 
@@ -1298,6 +1299,7 @@ int main(int argc, char **argv) {
     editorSelectSyntaxHighlight(argv[1]);
     editorOpen(argv[1]);
     enableRawMode(STDIN_FILENO);
+    write(STDOUT_FILENO, "\x1b[?1049h", 8); /* Enter alternate screen buffer */
     editorSetStatusMessage(
         "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
     while(1) {
